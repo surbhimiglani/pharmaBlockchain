@@ -1,0 +1,27 @@
+<nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="#">List of Medicines</a>
+
+  <div class="nav navbar-nav navbar-right">
+    <ul class="nav mr-auto">
+      <li class="me">
+        <a class="nav-link" href="/shopping-cart/">Cart</a>
+        <span class="badge">{{session.cart.totalQty}}</span>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Login
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          {{# if login}}
+            <a class="dropdown-item" href="/user/profile">User Account</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/user/logout">Logout</a>
+          {{else}}
+            <a class="dropdown-item" href="/user/signup">Sign Up</a>
+            <a class="dropdown-item" href="/user/signin">Sign In</a>
+          {{/if}}
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>

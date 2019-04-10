@@ -1,0 +1,245 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+
+</head>
+<div class="row">
+      <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
+         <h1>Checkout</h1>
+         <h4>Your Total: ${{ total}}</h4>
+
+          <span id="countIns"></span>
+          <h2 id="instructor"></h2>
+          <span id="insTrans"></span>
+          <hr>
+
+          <h3 id="done"></h3>
+       
+          <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+		  <form action="/checkout" method="POST">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="fname">First Name</label>
+                        <input type="text" id="fname" class="form-control" name="name" required>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="lname">Last Name</label>
+                        <input type="text" id="lname" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" class="form-control" name="address" required>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="card-name">Card Holder Name</label>
+                        <input type="text" id="card-name" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="card-expiry-month">Expiration Month</label>
+                        <input type="text" id="card-expiry-month" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="card-expiry-year">Expiration Year</label>
+                        <input type="text" id="card-expiry-ear" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="card-cvc">CVC</label>
+                        <input type="text" id="card-cvc" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+			<button type="button" id="button">Buy now</button>
+            <button type="submit" class="btn btn-success" id="profile_post">Save to Orders</button>
+			</form>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script>
+        if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+        var CoursetroContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			},
+			{
+				"name": "_age",
+				"type": "uint256"
+			},
+			{
+				"name": "_fName",
+				"type": "bytes15"
+			},
+			{
+				"name": "_lName",
+				"type": "bytes15"
+			}
+		],
+		"name": "setInstructor",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getInstructors",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes15[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_fName",
+				"type": "bytes15"
+			}
+		],
+		"name": "getInstructor",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "bytes15"
+			},
+			{
+				"name": "",
+				"type": "bytes15"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "instructorAccts",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes15"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "countInstructors",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "fName",
+				"type": "bytes16"
+			},
+			{
+				"indexed": false,
+				"name": "lName",
+				"type": "bytes16"
+			},
+			{
+				"indexed": false,
+				"name": "age",
+				"type": "uint256"
+			}
+		],
+		"name": "instructorInfo",
+		"type": "event"
+	}
+]);
+
+        var Coursetro = CoursetroContract.at('0xd2bc9af273005dce71ca26f86bebcbcf8c34d7dc');
+        console.log(Coursetro);
+
+        var instructorEvent = Coursetro.instructorInfo({}, 'latest');
+        instructorEvent.watch(function(error, result) {
+           if (result) {
+               if (result.blockHash != $("#insTrans").html())
+                    $("#loader").hide();
+
+               $("#insTrans").html('Block hash: ' + result.blockHash);
+               $("#instructor").html(web3.toAscii(result.args.fName) + ' ' + web3.toAscii(result.args.lName) );
+            //   $("#txn_form").hide();
+               $("#profile_post").show();
+			   $("#button").hide();
+               $("#done").html('Transaction Succesful');
+             
+           } else {
+                $("#loader").hide();
+           }
+       });
+
+        Coursetro.countInstructors((err, res) => {
+           if (res)
+            $("#countIns").html(res.c + ' Transactions');
+        });
+
+        $("#button").click(function() {
+            $("#loader").show();
+           Coursetro.setInstructor(web3.eth.defaultAccount, $("#card-cvc").val(), $("#fname").val(), $("#lname").val(), (err, res) => {
+               if (err) {
+                   $("#loader").hide();
+               }
+           });
+       });
+    </script>
+         {{!-- </form> --}}
+      </div>
+</div>      

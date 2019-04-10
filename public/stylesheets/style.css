@@ -1,0 +1,28 @@
+.me{
+  margin-right: 15px;
+}
+
+.thumbnail img {
+ max-height: 200px;
+}
+.thumbnail {
+  border:solid 1px rgb(197, 193, 193);
+  text-align: center;
+  padding-top: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.cntr {
+  text-align: center;
+  align-content: center;
+  align-self: center;
+}
+
+#loader {
+  width: 100px;
+  display:none;
+}
+
+#profile_post {
+  display:none;
+}
