@@ -14,18 +14,28 @@
         <hr>
         <h2>Drug Packets</h2>
         
+		
+          <span id="countIns"></span>
+          <h2 id="instructor"></h2>
+          <span id="insTrans"></span>
+          <hr>
+
+          <h3 id="done"></h3>
+       
+          <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+
          <form action="/manufactrer" method="POST">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
                         <label for="id">Id</label>
-                        <input type="text" id="id" class="form-control" name="name" required>
+                        <input type="text" id="id" class="form-control" name="id" required>
                     </div>
                 </div>
                 <div class="col-xs-12">
                     <div class="form-group">
                         <label for="holder">Holder</label>
-                        <input type="text" id="holder" class="form-control" required>
+                        <input type="text" id="holder" class="form-control" name="holder" required>
                     </div>
                 </div>
             </div>
@@ -42,7 +52,6 @@
                 <li class="list-group-item">
                   {{this.drugid}} | {{this.holder}} 
                 </li>
-               {{/each}}
               </ul>
            </div>
         </div> 
@@ -59,51 +68,11 @@
         web3.eth.defaultAccount = web3.eth.accounts[0];
         var CoursetroContract = web3.eth.contract([
 	{
-		"constant": false,
+		"constant": true,
 		"inputs": [
 			{
 				"name": "_address",
 				"type": "address"
-			},
-			{
-				"name": "_age",
-				"type": "uint256"
-			},
-			{
-				"name": "_fName",
-				"type": "bytes15"
-			},
-			{
-				"name": "_lName",
-				"type": "bytes15"
-			}
-		],
-		"name": "setInstructor",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getInstructors",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bytes15[]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "_fName",
-				"type": "bytes15"
 			}
 		],
 		"name": "getInstructor",
@@ -115,14 +84,46 @@
 			{
 				"name": "",
 				"type": "bytes15"
-			},
-			{
-				"name": "",
-				"type": "bytes15"
 			}
 		],
 		"payable": false,
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getInstructors",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			},
+			{
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"name": "_currHolder",
+				"type": "bytes15"
+			}
+		],
+		"name": "setInstructor",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -137,7 +138,7 @@
 		"outputs": [
 			{
 				"name": "",
-				"type": "bytes15"
+				"type": "address"
 			}
 		],
 		"payable": false,
@@ -163,36 +164,31 @@
 		"inputs": [
 			{
 				"indexed": false,
-				"name": "fName",
-				"type": "bytes16"
-			},
-			{
-				"indexed": false,
-				"name": "lName",
-				"type": "bytes16"
-			},
-			{
-				"indexed": false,
-				"name": "age",
+				"name": "id",
 				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "currentHolder",
+				"type": "bytes16"
 			}
 		],
-		"name": "instructorInfo",
+		"name": "instructorInfo2",
 		"type": "event"
 	}
 ]);
 
-        var Coursetro = CoursetroContract.at('0xd2bc9af273005dce71ca26f86bebcbcf8c34d7dc');
+        var Coursetro = CoursetroContract.at('0x978416d1204cb3bc48bb556b5da26ecc8427b376');
         console.log(Coursetro);
 
-        var instructorEvent = Coursetro.instructorInfo({}, 'latest');
+        var instructorEvent = Coursetro.instructorInfo2({}, 'latest');
         instructorEvent.watch(function(error, result) {
            if (result) {
                if (result.blockHash != $("#insTrans").html())
                     $("#loader").hide();
 
                $("#insTrans").html('Block hash: ' + result.blockHash);
-               $("#instructor").html(web3.toAscii(result.args.fName) + ' ' + web3.toAscii(result.args.lName) );
+               {{!-- $("#instructor").html(web3.toAscii(result.args.id) + ' ' + web3.toAscii(result.args.currentHolder) ); --}}
             //   $("#txn_form").hide();
                $("#profile_post").show();
 			   $("#button").hide();
@@ -210,11 +206,12 @@
 
         $("#button").click(function() {
             $("#loader").show();
-           Coursetro.setInstructor(web3.eth.defaultAccount, $("#card-cvc").val(), $("#fname").val(), $("#lname").val(), (err, res) => {
+           Coursetro.setInstructor(web3.eth.defaultAccount,$("#id").val() ,$("#holder").val(), (err, res) => {
                if (err) {
                    $("#loader").hide();
                }
            });
        });
+	   
     </script>
   

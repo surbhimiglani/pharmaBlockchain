@@ -3,6 +3,7 @@ var router = express.Router();
 var Product=require('../models/product');
 var Cart=require('../models/cart');
 var Order=require('../models/order');
+var Drug=require('../models/drug');
 // var Web3=require("../node_modules/web3/dist/web3.min.js");
 
 /* GET home page. */
@@ -82,6 +83,50 @@ router.post('/checkout', isLoggedIn ,function(req, res, next){
        res.redirect('/user/profile');
   });
 });
+
+
+router.get('/manufactrer',function(req, res, next){
+
+  Drug.find({id: req.id}, function(err, orders){
+    if(err){
+      return res.write('Error!');
+    }
+    res.render('shop/manufactrer', {orders: orders});
+   });
+});
+
+ router.post('/manufactrer', isLoggedIn ,function(req, res, next){
+  Drug.find({drugid: req.body.id}).count(function(err, product){
+    if(err){
+      console.log(err)
+    }
+     console.log('ll'+product);
+     if(product>0){
+
+      
+    Drug.update({drugid:req.body.id},{holder:req.body.holder},function(err, result){
+      res.redirect('/manufactrer');
+      console.log('llllkk');
+
+    });
+  
+  }
+  else{
+    
+    var order= new Drug({
+      drugid: req.body.id,
+      holder: req.body.holder
+    });
+     order.save(function(err, result){
+      console.log(result);
+      console.log(err);
+      res.redirect('/manufactrer');
+ });
+}
+});
+  
+});
+
 
 module.exports = router;
  

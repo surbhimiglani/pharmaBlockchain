@@ -4,10 +4,9 @@ var router = express.Router();
 var csrf = require('csurf');
 var Cart=require('../models/cart');
 var Order=require('../models/order');
-
+var Drug=require('../models/drug');
 var csrfProtection= csrf();
 router.use(csrfProtection);
-
  
 router.get('/profile', isLoggedIn,function(req, res, next){
   Order.find({user: req.user}, function(err, orders){
@@ -75,31 +74,6 @@ router.get('/signup', function(req, res, next){
     }
  });
 
-
- router.get('/manufactrer', function(req, res, next){
-
-  Drug.find({user: req.user}, function(err, orders){
-    if(err){
-      return res.write('Error!');
-    }
-    res.render('user/manufactrer', {orders: orders});
-   });
-});
-
- router.post('/manufactrer', isLoggedIn ,function(req, res, next){
-  if(!req.session.cart){
-    return res.render('/shopping-cart');
-  }
-  var order= new Drug({
-       drugid: req.body.drugid,
-       holder: req.body.holder
-  });
-  order.save(function(err, result){
-       req.flash('success', 'Succesfully bought product');
-       req.session.cart=null;
-       res.redirect('/user/manufactrer');
-  });
-});
 
  module.exports = router;
 
